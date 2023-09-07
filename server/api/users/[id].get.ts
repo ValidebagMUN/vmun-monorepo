@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
         });
     }
     try {
+        console.log(event.context.params?.id)
         const userResponse = await db.select({
             id: users.id,
             email: users.email,
@@ -20,6 +21,12 @@ export default defineEventHandler(async (event) => {
             lastLogin: users.last_login,
             type: users.type
         }).from(users).where(eq(users.id, event.context.params?.id as any));
+        if(userResponse.length === 0) {
+            throw createError({
+                status: 404,
+                statusMessage: 'Not Found'
+            })
+        }
         return userResponse[0];
     } catch (e: any) {
         throw createError({
