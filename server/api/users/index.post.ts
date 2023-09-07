@@ -1,5 +1,5 @@
 import { getServerSession } from '#auth'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 
 import { db } from '../../db/service'
 import { users, InsertUser } from '../../db/schema'
