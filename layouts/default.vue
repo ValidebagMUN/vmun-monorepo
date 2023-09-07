@@ -1,4 +1,7 @@
 <template>
+    <Head>
+        <Meta name="robots" content="noindex, nofollow"/>
+    </Head>
     <div>
         <slot />
     </div>
