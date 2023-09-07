@@ -2,6 +2,9 @@
 export default defineNuxtConfig({
   modules: ['@sidebase/nuxt-auth'],
   devtools: { enabled: true },
+  nitro: {
+    preset: 'vercel-edge'
+  },
   auth: {
     globalAppMiddleware: true
   },
