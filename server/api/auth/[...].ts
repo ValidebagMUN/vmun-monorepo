@@ -1,6 +1,6 @@
 import { NuxtAuthHandler } from '#auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import bcrypt from 'bcryptjs'
+import bcrypt from 'bcrypt'
 
 import { eq } from 'drizzle-orm'
 import { db } from '../../db/service'
