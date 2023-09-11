@@ -7,8 +7,7 @@ import { committees, chairs } from '../../db/schema'
 export default defineEventHandler(async (event) => {
     const id = getRouterParam(event, 'id');
     try {
-        const numId = Number(id);
-        if (isNaN(numId)) {
+        if (isNaN(Number(id))) {
             throw createError({
                 status: 400,
                 statusMessage: "Bad Request"
