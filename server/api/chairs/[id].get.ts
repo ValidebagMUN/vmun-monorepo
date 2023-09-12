@@ -5,55 +5,64 @@ import { db } from '../../db/service';
 import { chairs } from '../../db/schema';
 
 export default defineEventHandler(async (event) => {
-    const id = getRouterParam(event, 'id');
     try {
+        const id = getRouterParam(event, 'id');
         if (isNaN(Number(id))) {
             throw createError({
-                status: 400,
-                statusMessage: "Bad Request"
+                status: 400
             })
         }
-    } catch (e: any) {
-        throw createError({
-            status: 400,
-            statusMessage: e.message
-        })
-    }
+    
+        const session: any = await getServerSession(event);
+        if (!session) {
+            throw createError({
+                status: 403
+            })
+        }
 
-    const session: any = await getServerSession(event);
-    if (!session) {
-        throw createError({
-            status: 401,
-            statusMessage: 'Unauthorized'
-        })
-    }
-
-    try {
         if (session.user?.type === 'chair') {
             const chair = await db.select().from(chairs).where(eq(chairs.userId, session.user?.id));
             if (chair[0] && chair[0].id?.toString() === id) {
-                console.log(typeof chair)
-                return chair;
+                return chair[0];
             }
             else throw createError({
-                status: 403,
-                statusMessage: 'Forbidden'
+                status: 403
             })
         }
         else if (session.user?.type === 'admin' || session.user?.type === 'staff') {
             const chair = await db.select().from(chairs).where(eq(chairs.id, Number(id)));
-            return chair;
+            return chair[0];
         }
     } catch (e: any) {
-        if (e.message == "Not Found") {
-            throw createError({
-                status: 404,
-                statusMessage: e.message
-            })
+        switch (e.statusCode) {
+            case 404: {
+                throw createError({
+                    status: 404,
+                    statusMessage: 'Not Found',
+                    statusText: e.statusText
+                })
+            }
+            case 403: {
+                throw createError({
+                    status: 403,
+                    statusMessage: 'Forbidden',
+                    statusText: e.statusText
+                })
+            }
+            case 400: {
+                throw createError({
+                    status: 400,
+                    statusMessage: 'Bad Request',
+                    statusText: e.statusText
+                })
+            }
+            default: {
+                throw createError({
+                    status: 500,
+                    statusMessage: 'Internal Server Error',
+                    statusText: e.statusText
+                })
+            }
         }
-        else throw createError({
-            status: 400,
-            statusMessage: e.message
-        })
     }
 })

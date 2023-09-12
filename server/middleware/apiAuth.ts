@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     if(!publicRoutes.includes(event.path) && !session && event.path.includes('/api/') && !event.path.includes('/api/auth/')) {
         throw createError({
             status: 403,
-            statusMessage: 'Unauthorized'
+            statusMessage: 'Forbidden'
         })
     }
 });
