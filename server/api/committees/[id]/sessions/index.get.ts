@@ -1,24 +1,36 @@
 import { getServerSession } from '#auth'
 import { eq } from 'drizzle-orm'
 
-import { db } from '../../db/service'
-import { chairs } from '../../db/schema'
+import { db } from '../../../../db/service'
+import { committees, sessions, chairs } from '../../../../db/schema'
 
 export default defineEventHandler(async (event) => {
     try {
+        const id = getRouterParam(event, 'id');
+        if (isNaN(Number(id))) {
+            throw createError({
+                status: 400
+            })
+        }
+
         const session: any = await getServerSession(event);
-        if(!session) throw createError({
-            status: 403,
+        if (!session) throw createError({
+            status: 403
         })
 
-        if (session.user.type == 'admin' || session.user.type == 'staff') {
-            const chairList = await db.select().from(chairs);
-            return chairList;
+        const chair = await db.select().from(chairs).where(eq(chairs.userId, session.user?.id));
+        let committeeSessions;
+        if (chair[0] && session.user?.type == 'chair' && chair[0].committeeId == Number(id)) {
+            committeeSessions = await db.select().from(sessions).where(eq(sessions.committeeId, chair[0].committeeId))
+            
         }
-        else {
-            const chair = await db.select().from(chairs).where(eq(chairs.userId, session.user.id));
-            return chair;
+        else if (session.user?.type == 'admin' || session.user?.type == 'staff') {
+            committeeSessions = await db.select().from(sessions).where(eq(sessions.committeeId, Number(id)))
         }
+        else throw createError({
+            status: 403
+        })
+        return committeeSessions;
     } catch (e: any) {
         switch (e.statusCode) {
             case 404: {
