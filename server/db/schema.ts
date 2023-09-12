@@ -28,18 +28,20 @@ enum RepresentativeEnum {
     NGO = 'ngo',
     Observer = 'observer'
 };
-type RepresentativeType = keyof typeof RepresentativeEnum;
+type RepresentativeTypeEnum = keyof typeof RepresentativeEnum;
+
+export type RepresentativeType = {
+    id: Number,
+    name: String,
+    type: RepresentativeTypeEnum
+}
 
 export const committees = pgTable('committees', {
     id: serial('id').primaryKey(),
     name: varchar('name'),
     slug: varchar('slug', { length: 10}).unique(),
     agenda: varchar('agenda').array(),
-    representatives: jsonb('representatives').$type<{
-        id: Number,
-        name: String,
-        type: RepresentativeType
-    }[]>()
+    representatives: jsonb('representatives').$type<RepresentativeType[]>()
 });
 
 export const committeeRelations = relations(committees, ({ one, many }) => ({

@@ -1,8 +1,8 @@
 import { getServerSession } from '#auth';
 import { and, eq } from 'drizzle-orm'
 
-import { db } from '../../../../db/service';
-import { sessions, chairs } from '../../../../db/schema';
+import { db } from '~/server/db/service';
+import { sessions, chairs } from '~/server/db/schema';
 
 export default defineEventHandler(async (event) => {
     try {

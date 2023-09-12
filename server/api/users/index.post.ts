@@ -1,15 +1,15 @@
 import { getServerSession } from '#auth'
 import bcrypt from 'bcrypt'
 
-import { db } from '../../db/service'
-import { users, InsertUser } from '../../db/schema'
+import { db } from '~/server/db/service'
+import { users, InsertUser } from '~/server/db/schema'
 
 export default defineEventHandler(async (event) => {
     const session = await getServerSession(event);
     if((session?.user as any).type !== 'admin') {
         throw createError({
             status: 403,
-            statusMessage: 'Unauthorized'
+            statusMessage: 'Forbidden'
         });
     }
     try {
