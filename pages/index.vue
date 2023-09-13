@@ -1,16 +1,12 @@
 <template>
     <div>
-        <h1>BASED</h1>
-        <ul>
-            <li v-for="user in users" :key="user.id">
-                {{ user.email }}
-            </li>
-        </ul>
+       <!--  <h1 class="bg-slate-500">BASED</h1> -->
+        {{ fetch }}
     </div>
 </template>
 
 <script setup lang="ts">
-const { data:users } = await useFetch('/api/users/')
+    const fetch = await useFetch('/api/chairs/')
 </script>
 
 <style scoped>

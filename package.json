@@ -10,17 +10,17 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "@nuxt/ui": "^2.8.0",
+    "@nuxt/ui": "^2.8.1",
     "@sidebase/nuxt-auth": "0.6.0-beta.5",
     "drizzle-kit": "^0.19.13",
-    "nuxt": "^3.7.1",
+    "nuxt": "^3.7.2",
     "pg": "^8.11.3"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.6.0",
     "@types/bcrypt": "^5.0.0",
     "bcrypt": "^5.1.1",
-    "drizzle-orm": "^0.28.5",
+    "drizzle-orm": "^0.28.6",
     "next-auth": "4.21.1",
     "postgres": "^3.3.5"
   }

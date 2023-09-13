@@ -1,40 +1,25 @@
-import { getServerSession } from "#auth";
-import { eq } from "drizzle-orm";
+import { getServerSession } from '#auth'
+import { eq } from 'drizzle-orm'
 
-import { db } from '~/server/db/service';
-import { chairs } from '~/server/db/schema';
+import { db } from '~/server/db/service'
+import { committees, chairs, RepresentativeType } from '~/server/db/schema'
 
 export default defineEventHandler(async (event) => {
     try {
         const id = getRouterParam(event, 'id');
-        if (isNaN(Number(id))) {
-            throw createError({
-                status: 400
-            })
-        }
-    
-        const session: any = await getServerSession(event);
-        if (!session) {
-            throw createError({
-                status: 403
-            })
-        }
+        if (isNaN(Number(id))) throw createError({
+            status: 400
+        })
 
-        if (session.user?.type === 'chair') {
-            const chair = await db.query.chairs.findFirst({ where: (chairs, { eq }) => eq(chairs.userId, session.user?.id) })
-            if (chair && chair.id === Number(id)) {
-                return chair;
-            }
-            else throw createError({
-                status: 403
-            })
-        }
-        else if (session.user?.type === 'admin' || session.user?.type === 'staff') {
-            const chair = await db.query.chairs.findFirst({ where: (chairs, { eq }) => eq(chairs.id, Number(id)) })
-            if(typeof chair == undefined) throw createError({
-                status: 404
-            })
-            return chair;
+        const session: any = await getServerSession(event);
+        if (!session) throw createError({
+            status: 403
+        })
+
+        const chair = await db.select().from(chairs).where(eq(chairs.userId, session.user?.id));
+        if (chair[0] && session.user.role == 'chair' && chair[0].committeeId == Number(id)) {
+            const { representativesJson: representatives } = (await db.select({ representativesJson: committees.representatives }).from(committees).where(eq(committees.id, Number(id))))[0];
+            console.log(representatives)
         }
     } catch (e: any) {
         switch (e.statusCode) {

@@ -34,6 +34,7 @@ export default NuxtAuthHandler({
             },
             authorize: async (credentials: { email: string, password: string }) => {
                 try {
+                    // const user = await db.query.users.findFirst({ where: (users, { eq }) => eq(users.email, credentials.email) })
                     const user = (await db.selectDistinct().from(users).where(eq(users.email, credentials.email)))[0];
                     if (user) {
                         const match = await bcrypt.compare(credentials.password, user.password);

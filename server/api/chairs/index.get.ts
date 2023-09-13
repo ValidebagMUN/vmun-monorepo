@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
         }
         else {
             const chair = await db.select().from(chairs).where(eq(chairs.userId, session.user.id));
-            return chair;
+            return structuredClone(chair);
         }
     } catch (e: any) {
         switch (e.statusCode) {
@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
             default: {
                 throw createError({
                     status: 500,
-                    statusMessage: 'Internal Server Error',
+                    statusMessage: e.message,
                     statusText: e.statusText
                 })
             }

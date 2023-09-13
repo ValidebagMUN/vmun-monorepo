@@ -19,17 +19,14 @@ export default defineEventHandler(async (event) => {
                 lastLogin: users.last_login,
                 type: users.type
             }).from(users);
-            return userList;
+            return 0
+            // return userList;
         }
         else {
-            const user = await db.select({
-                id: users.id,
-                email: users.email,
-                createdAt: users.created_at,
-                lastLogin: users.last_login,
-                type: users.type
-            }).from(users).where(eq(users.id, session.user.id));
-            return user;
+            const user = await db.select().from(users).where(eq(users.id, session.user.id));
+            console.log(typeof user)
+            return 0
+            // return structuredClone(user);
         }
     } catch (e: any) {
         switch (e.statusCode) {
