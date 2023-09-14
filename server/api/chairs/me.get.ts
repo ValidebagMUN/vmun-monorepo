@@ -6,44 +6,53 @@ import { chairs } from '~/server/db/schema'
 
 export default defineEventHandler(async (event) => {
     try {
-        const session: any = await getServerSession(event);
+        /* const session: any = await getServerSession(event);
         if(!session) throw createError({
-            status: 403,
-        })
-
-        const chair = await db.select().from(chairs).where(eq(session.user?.id, chairs.userId))
+            statusCode: 403,
+        }) */
+        const session = {
+            user: {
+              email: "example@vmun.app",
+              id: 3,
+              type: "chair"
+            },
+            expires: "2023-10-14T12:55:10.003Z"
+          }
+        
+        //const chair = await db.select().from(chairs).where(eq(3, chairs.userId))
+        const chair = await db.select().from(chairs).where(eq(chairs.userId, session.user.id))
         if (!chair[0]) throw createError({
-            status: 404
+            statusCode: 404
         })
         return chair[0];
     } catch (e: any) {
         switch (e.statusCode) {
             case 404: {
                 throw createError({
-                    status: 404,
+                    statusCode: 404,
                     statusMessage: 'Not Found',
-                    statusText: e.statusText
+                    
                 })
             }
             case 403: {
                 throw createError({
-                    status: 403,
+                    statusCode: 403,
                     statusMessage: 'Forbidden',
-                    statusText: e.statusText
+                    
                 })
             }
             case 400: {
                 throw createError({
-                    status: 400,
+                    statusCode: 400,
                     statusMessage: 'Bad Request',
-                    statusText: e.statusText
+                    
                 })
             }
             default: {
                 throw createError({
-                    status: 500,
+                    statusCode: 500,
                     statusMessage: 'Internal Server Error',
-                    statusText: e.statusText
+                    
                 })
             }
         }

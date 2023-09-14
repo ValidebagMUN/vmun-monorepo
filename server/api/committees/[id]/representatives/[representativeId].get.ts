@@ -8,12 +8,12 @@ export default defineEventHandler(async (event) => {
     try {
         const { id, representativeId } = getRouterParams(event);
         if (isNaN(Number(id)) || isNaN(Number(representativeId))) throw createError({
-            status: 400
+            statusCode: 400
         })
 
         const session: any = await getServerSession(event);
         if (!session) throw createError({
-            status: 403
+            statusCode: 403
         })
 
         const chair = await db.select().from(chairs).where(eq(chairs.userId, session.user?.id));
@@ -25,30 +25,30 @@ export default defineEventHandler(async (event) => {
         switch (e.statusCode) {
             case 404: {
                 throw createError({
-                    status: 404,
+                    statusCode: 404,
                     statusMessage: 'Not Found',
-                    statusText: e.statusText
+                    
                 })
             }
             case 403: {
                 throw createError({
-                    status: 403,
+                    statusCode: 403,
                     statusMessage: 'Forbidden',
-                    statusText: e.statusText
+                    
                 })
             }
             case 400: {
                 throw createError({
-                    status: 400,
+                    statusCode: 400,
                     statusMessage: 'Bad Request',
-                    statusText: e.statusText
+                    
                 })
             }
             default: {
                 throw createError({
-                    status: 500,
+                    statusCode: 500,
                     statusMessage: 'Internal Server Error',
-                    statusText: e.statusText
+                    
                 })
             }
         }
