@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
     const session = await getServerSession(event);
     if((session?.user as any).type !== 'admin') {
         throw createError({
-            status: 403,
+            statusCode: 403,
             statusMessage: 'Forbidden'
         });
     }
@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
         return "200 OK"
     } catch (e: any) {
         throw createError({
-            status: 400,
+            statusCode: 400,
             statusMessage: e.message
         })
     }
